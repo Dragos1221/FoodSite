@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import NavBar from '../components/NavBar'
-import {Container, Typography , TextField , Grid , Card , CardMedia , Button} from "@material-ui/core"
+import {Container, Typography , TextField , Grid , Card , CardMedia , Button , CardContent ,CardActions} from "@material-ui/core"
 import { makeStyles  } from '@material-ui/core/styles';
 import ServiceApi from "../service";
 const useStyles = makeStyles((theme) => ({
@@ -55,12 +55,12 @@ class RecipesByNutrients extends Component {
                 minProtein:0,
                 maxProtein:10
             },
-            data:[],
+            data:[]
         }
     }
 
     componentDidMount(){
-       console.log(this.fetchData());
+      //console.log(this.fetchData());
     }
 
     fetchData = async ()=>{
@@ -72,9 +72,35 @@ class RecipesByNutrients extends Component {
 
     changeData = (type) => (event)=>{
         this.setState({
-            [type]:event.target.value
+            params:{
+                [type]:event.target.value
+            }
         })
         this.fetchData();
+    }
+
+
+    gridItem = (elem)=>{
+        const classes = this.props.classes;
+        return(
+        <Grid  item={true} key={elem.title} xs={12} sm={6} md={4}>
+            <Card className={classes.Card}>
+            <CardMedia
+                    className={classes.cardMedia}
+                    image={elem.image}
+                    title={elem.title}
+                  />
+                  <CardContent className={classes.cardContent}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                     {elem.title}
+                    </Typography>
+                    <Typography >
+                      Calories:{elem.calories}
+                    </Typography>
+                  </CardContent>
+                </Card>
+        </Grid>
+        )
     }
     render() { 
         const classes = this.props.classes;
@@ -102,18 +128,15 @@ class RecipesByNutrients extends Component {
                     value={this.state.params.maxProtein}  
                     onChange={this.changeData("maxProtein")}/>
             </Container>
-                <Grid container={true} >
+            <Container className={classes.cardGrid} >
+            <Grid container direction="row" justify="center" alignItems="center" spacing={6}>
                     {   
                         this.state.data.map((elem)=>{
-                            console.log(elem);
-                            <Grid item={true} key={elem}>
-                            <Button variant="outlined" color="primary">
-                                Secondary action
-                            </Button>
-                        </Grid>
+                            return this.gridItem(elem)
                         }) 
                     }
-                </Grid>
+            </Grid>
+            </Container>
             </div>
         </div>  );
     }
