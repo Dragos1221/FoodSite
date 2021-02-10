@@ -17,6 +17,7 @@ class ServiceApi extends Component {
 
     recipesByNutrient =  async (params)=>{
         try {
+            console.log(params ,"d");
             const {data:response} = await axios({
                 method: 'get',
                 url: 'https://api.spoonacular.com/recipes/findByNutrients',
@@ -29,7 +30,7 @@ class ServiceApi extends Component {
           return response;
         }catch(e)
         {
-            console.log(e);
+            return [];
         }
     }
 }

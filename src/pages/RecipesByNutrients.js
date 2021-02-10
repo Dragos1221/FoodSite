@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar'
 import {Container, Typography , TextField , Grid , Card , CardMedia , Button , CardContent ,CardActions} from "@material-ui/core"
 import { makeStyles  } from '@material-ui/core/styles';
 import ServiceApi from "../service";
+import isEqual from 'lodash/isEqual'
 const useStyles = makeStyles((theme) => ({
     icon: {
       marginRight: theme.spacing(2),
@@ -35,25 +36,25 @@ const useStyles = makeStyles((theme) => ({
     },
     inputs:{
         marginLeft: theme.spacing(20)
+    }, bg:{
     }
   }));
 
 class RecipesByNutrients extends Component {
-    state={
-        params:{
-            minProtein:0,
-            maxProtein:10
-        },
-        data:[],
-    }
     serviceApi = new ServiceApi();
     constructor(props)
     {
         super(props);
         this.state={
             params:{
-                minProtein:0,
-                maxProtein:10
+              minProtein:0,
+              maxProtein:10,
+              maxCarbs:10,
+              minCarbs:0,
+              minFat:0,
+              maxFat:10,
+              number:100,
+              random:true
             },
             data:[]
         }
@@ -61,6 +62,13 @@ class RecipesByNutrients extends Component {
 
     componentDidMount(){
       //console.log(this.fetchData());
+    }
+
+    componentDidUpdate(prevProps,prevState){
+      if(!isEqual(this.state.params, prevState.params))
+        {
+          this.fetchData();
+        }
     }
 
     fetchData = async ()=>{
@@ -73,10 +81,10 @@ class RecipesByNutrients extends Component {
     changeData = (type) => (event)=>{
         this.setState({
             params:{
-                [type]:event.target.value
+                ...this.state.params,
+                [type]:Number(event.target.value)
             }
         })
-        this.fetchData();
     }
 
 
@@ -105,10 +113,10 @@ class RecipesByNutrients extends Component {
     render() { 
         const classes = this.props.classes;
         return (
-        <div>
+        <div className={classes.bg}>
             <NavBar></NavBar>
             <div className={classes.heroContent}>
-            <Container maxWidth="sm">
+            <Container maxWidth="sm" className={classes.bg}>
                 <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
                     Retete pentru campioni
                 </Typography>
@@ -127,6 +135,30 @@ class RecipesByNutrients extends Component {
                     type="number" 
                     value={this.state.params.maxProtein}  
                     onChange={this.changeData("maxProtein")}/>
+                  <TextField className={classes.inputs}
+                    label="minCarbs" 
+                    color="secondary" 
+                    type="number" 
+                    value={this.state.params.minCarbs}  
+                    onChange={this.changeData("minCarbs")}/>
+                  <TextField className={classes.inputs}
+                    label="maxCarbs" 
+                    color="secondary" 
+                    type="number" 
+                    value={this.state.params.maxCarbs}  
+                    onChange={this.changeData("maxCarbs")}/>
+                    <TextField className={classes.inputs}
+                    label="minFat" 
+                    color="secondary" 
+                    type="number" 
+                    value={this.state.params.minFat}  
+                    onChange={this.changeData("minFat")}/>
+                  <TextField className={classes.inputs}
+                    label="maxFat" 
+                    color="secondary" 
+                    type="number" 
+                    value={this.state.params.maxFat}  
+                    onChange={this.changeData("maxFat")}/>      
             </Container>
             <Container className={classes.cardGrid} >
             <Grid container direction="row" justify="center" alignItems="center" spacing={6}>
